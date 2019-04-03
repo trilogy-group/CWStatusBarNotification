@@ -255,10 +255,19 @@ static void cancel_delayed_block(CWDelayedBlockHandle delayedHandle)
 
 - (CGFloat)getStatusBarOffset
 {
+    CGFloat offset = 0;
     if ([self getStatusBarHeight] == 40.0f) {
-        return -20.0f;
+        offset = -20.0f;
     }
-    return 0.0f;
+    if (@available(iOS 11.0, *)) {
+        UIWindow *window = UIApplication.sharedApplication.keyWindow;
+        offset = offset + window.safeAreaInsets.top;
+    }
+    else {
+        offset = offset + self.notificationWindow.rootViewController.topLayoutGuide.length;
+    }
+    
+    return offset;
 }
 
 - (CGFloat)getNavigationBarHeight
